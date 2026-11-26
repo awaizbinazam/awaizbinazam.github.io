@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-display: "Fraunces", Georgia, serif;
+    --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-urdu: "Noto Nastaliq Urdu", "Noto Sans Arabic", serif;
+    --font-arabic: "Noto Sans Arabic", system-ui, sans-serif;
+    --font-chinese: "Noto Sans SC", system-ui, sans-serif;
+  }
+
+  html {
+    background-color: #faf9f6;
+    color: #18181b;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html[lang="ur"] body {
+    font-family: var(--font-urdu);
+    line-height: 2.15;
+  }
+
+  html[lang="ar"] body {
+    font-family: var(--font-arabic);
+    line-height: 1.85;
+  }
+
+  html[lang="zh"] body {
+    font-family: var(--font-chinese);
+    line-height: 1.75;
+  }
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+html[lang="ur"] .font-display {
+  font-family: var(--font-urdu);
+}
+
+html[lang="ar"] .font-display {
+  font-family: var(--font-arabic);
+}
+
+html[lang="zh"] .font-display {
+  font-family: var(--font-chinese);
+}
+
+.font-urdu-inline {
+  font-family: var(--font-urdu);
+  line-height: 2.15;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
