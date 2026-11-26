@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { ArrowUpRight, Menu, X } from 'lucide-react';
 import {
+  CONTACT_LINKS,
+  ContactLink,
+  DEGUOS_URL,
   Language,
   PageId,
   RELIEF_URL,
@@ -9,20 +12,54 @@ import {
 
 const PAGE_HASHES: Record<PageId, string> = {
   about: '#about',
-  services: '#services',
   contact: '#contact',
 };
 
 function parseHashToPage(hash: string): PageId {
   switch (hash.toLowerCase()) {
-    case '#services':
-      return 'services';
     case '#contact':
       return 'contact';
     case '#about':
     default:
       return 'about';
   }
+}
+
+interface LinkGroupProps {
+  title: string;
+  links: ContactLink[];
+}
+
+function ContactLinkGroup({ title, links }: LinkGroupProps) {
+  return (
+    <div className="space-y-4">
+      <h2 className="font-display text-lg font-semibold text-[#18181B]">
+        {title}
+      </h2>
+      <ul className="divide-y divide-[#E4E0D8] border-y border-[#E4E0D8]">
+        {links.map((item) => (
+          <li key={item.url}>
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex min-h-[48px] items-center justify-between gap-4 py-3 text-sm transition-colors hover:text-[#1F513B] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1F513B]"
+            >
+              <span className="font-medium text-[#18181B] group-hover:text-[#1F513B] whitespace-nowrap shrink-0">
+                {item.label}
+              </span>
+              <span className="flex items-center gap-2 min-w-0 text-xs text-[#71717A] group-hover:text-[#1F513B]">
+                <span dir="ltr" className="truncate">
+                  {item.url}
+                </span>
+                <ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 export default function App() {
@@ -58,7 +95,6 @@ export default function App() {
 
   const navPages: { id: PageId; label: string }[] = [
     { id: 'about', label: t.nav.about },
-    { id: 'services', label: t.nav.services },
     { id: 'contact', label: t.nav.contact },
   ];
 
@@ -198,11 +234,153 @@ export default function App() {
         )}
       </header>
 
-      {/* Clean empty pages with zero body content */}
       <main className="flex-1">
-        {page === 'about' && <section aria-label={t.nav.about} className="mx-auto max-w-[1160px] px-5 py-12 md:px-8" />}
-        {page === 'services' && <section aria-label={t.nav.services} className="mx-auto max-w-[1160px] px-5 py-12 md:px-8" />}
-        {page === 'contact' && <section aria-label={t.nav.contact} className="mx-auto max-w-[1160px] px-5 py-12 md:px-8" />}
+        {page === 'about' && (
+          <article
+            aria-label={t.nav.about}
+            className="mx-auto max-w-[780px] px-5 py-12 md:px-8 md:py-16 space-y-12"
+          >
+            {/* Intro */}
+            <header className="space-y-5">
+              <h1
+                className={`font-display text-3xl font-semibold tracking-tight text-[#18181B] sm:text-4xl [text-wrap:balance] ${
+                  lang === 'ur' ? 'leading-[1.9]' : 'leading-[1.15]'
+                }`}
+              >
+                {t.aboutContent.title}
+              </h1>
+              <p className="text-base text-[#27272A] leading-relaxed">
+                {t.aboutContent.intro}
+              </p>
+              <div className="space-y-2.5 pt-1">
+                <p className="text-sm text-[#52525B] leading-relaxed">
+                  {t.aboutContent.organizationsLead}
+                </p>
+                <ul className="space-y-1.5 text-sm font-medium text-[#18181B]">
+                  {t.aboutContent.organizationsList.map((org) => (
+                    <li key={org.name} className="flex items-center gap-2">
+                      <span aria-hidden="true" className="text-[#1F513B]">
+                        ·
+                      </span>
+                      {org.url ? (
+                        <a
+                          href={org.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-[#1F513B] underline decoration-[#1F513B]/40 underline-offset-4 hover:decoration-[#1F513B]"
+                        >
+                          <span>{org.name}</span>
+                          <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                        </a>
+                      ) : (
+                        <span>{org.name}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </header>
+
+            {/* Palestine Relief Network */}
+            <section className="space-y-6 border-t border-[#E4E0D8] pt-10">
+              <div className="flex flex-wrap items-baseline justify-between gap-4">
+                <h2 className="font-display text-2xl font-semibold text-[#18181B]">
+                  {t.aboutContent.reliefSection.title}
+                </h2>
+                <a
+                  href={RELIEF_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs font-medium text-[#1F513B] underline decoration-[#1F513B]/40 underline-offset-4 hover:decoration-[#1F513B] whitespace-nowrap shrink-0"
+                >
+                  <span>{t.aboutContent.reliefSection.linkLabel}</span>
+                  <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </a>
+              </div>
+
+              <div className="space-y-4 text-sm sm:text-base text-[#3F3F46] leading-relaxed">
+                {t.aboutContent.reliefSection.paragraphs.map((paragraph, idx) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
+              </div>
+
+              <div className="rounded-xl border border-[#E4E0D8] bg-[#F2EFE9]/60 p-6 sm:p-7 space-y-4">
+                <h3 className="font-display text-lg font-semibold text-[#18181B]">
+                  {t.aboutContent.reliefSection.policyTitle}
+                </h3>
+                <p className="text-sm font-medium text-[#27272A]">
+                  {t.aboutContent.reliefSection.policyIntro}
+                </p>
+                <ul className="space-y-2.5 text-sm text-[#3F3F46] leading-relaxed">
+                  {t.aboutContent.reliefSection.policyPoints.map((point, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5">
+                      <span aria-hidden="true" className="text-[#1F513B] shrink-0">
+                        —
+                      </span>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="space-y-3 pt-2 text-sm text-[#3F3F46] leading-relaxed">
+                  {t.aboutContent.reliefSection.policyOutro.map((paragraph, idx) => (
+                    <p key={idx}>{paragraph}</p>
+                  ))}
+                </div>
+                <p className="pt-2 font-display text-base font-semibold text-[#1F513B]">
+                  {t.aboutContent.reliefSection.closingStatement}
+                </p>
+              </div>
+            </section>
+
+            {/* DeguOS */}
+            <section className="space-y-3 border-t border-[#E4E0D8] pt-10">
+              <div className="flex flex-wrap items-baseline justify-between gap-4">
+                <h2 className="font-display text-2xl font-semibold text-[#18181B]">
+                  {t.aboutContent.deguSection.title}
+                </h2>
+                <a
+                  href={DEGUOS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs font-medium text-[#1F513B] underline decoration-[#1F513B]/40 underline-offset-4 hover:decoration-[#1F513B] whitespace-nowrap shrink-0"
+                >
+                  <span>{t.aboutContent.deguSection.linkLabel}</span>
+                  <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </a>
+              </div>
+              <p className="text-sm sm:text-base text-[#3F3F46] leading-relaxed">
+                {t.aboutContent.deguSection.description}
+              </p>
+            </section>
+
+            {/* Closing */}
+            <footer className="border-t border-[#E4E0D8] pt-8">
+              <p className="text-sm sm:text-base text-[#27272A] leading-relaxed">
+                {t.aboutContent.closing}
+              </p>
+            </footer>
+          </article>
+        )}
+
+        {page === 'contact' && (
+          <section
+            aria-label={t.nav.contact}
+            className="mx-auto max-w-[800px] px-5 py-12 md:px-8 md:py-16 space-y-10"
+          >
+            <ContactLinkGroup
+              title={t.contactSections.personal}
+              links={CONTACT_LINKS.personal}
+            />
+            <ContactLinkGroup
+              title={t.contactSections.reliefPages}
+              links={CONTACT_LINKS.reliefPages}
+            />
+            <ContactLinkGroup
+              title={t.contactSections.reliefCommunity}
+              links={CONTACT_LINKS.reliefCommunity}
+            />
+          </section>
+        )}
       </main>
     </div>
   );
